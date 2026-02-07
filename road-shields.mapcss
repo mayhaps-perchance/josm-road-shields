@@ -1,0 +1,138 @@
+meta {
+    title: "Road shields";
+    icon: "https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/Japanese_National_Route_Sign_Blank.svg";
+    version: "0.1";
+    description: "Render road shields adjacent their respective ways.";
+    author: "mayhaps-perchance";
+    link: "";
+    min-josm-version: "17759"; /* tentative */
+}
+
+setting::rs_dpi_scale {
+    type: double;
+    label: tr("DPI scale factor");
+    default: 1;
+}
+
+setting::rs_icon_size_min {
+    type: double;
+    label: tr("Minimum icon size");
+    default: 16;
+}
+
+setting::rs_icon_size_max {
+    type: double;
+    label: tr("Maximum icon size");
+    default: 64;
+}
+
+setting::rs_freq_way {
+    type: double;
+    label: tr("Way badge frequency");
+    default: 2;
+}
+
+relation[route=road][network] > way {
+    set rs;
+}
+
+way|z26[is_prop_set(rs, default)]::* {ppm: 519.168; }
+way|z25[is_prop_set(rs, default)]::* {ppm: 259.584; }
+way|z24[is_prop_set(rs, default)]::* {ppm: 129.792; }
+way|z23[is_prop_set(rs, default)]::* {ppm: 64.896; }
+way|z22[is_prop_set(rs, default)]::* {ppm: 32.448; }
+way|z21[is_prop_set(rs, default)]::* {ppm: 16.224; }
+way|z20[is_prop_set(rs, default)]::* {ppm: 8.112; }
+way|z19[is_prop_set(rs, default)]::* {ppm: 4.056; }
+way|z18[is_prop_set(rs, default)]::* {ppm: 2.028; }
+way|z17[is_prop_set(rs, default)]::* {ppm: 1.014; }
+way|z16[is_prop_set(rs, default)]::* {ppm: 0.507; }
+way|z15[is_prop_set(rs, default)]::* {ppm: 0.2535; }
+way|z14[is_prop_set(rs, default)]::* {ppm: 0.12675; }
+way|z13[is_prop_set(rs, default)]::* {ppm: 0.063375; }
+way|z12[is_prop_set(rs, default)]::* {ppm: 0.0316875; }
+way|z11[is_prop_set(rs, default)]::* {ppm: 0.01584375; }
+way|z10[is_prop_set(rs, default)]::* {ppm: 0.007921875; }
+way|z09[is_prop_set(rs, default)]::* {ppm: 0.0039609375; }
+way|z08[is_prop_set(rs, default)]::* {ppm: 0.00198046875; }
+way|z07[is_prop_set(rs, default)]::* {ppm: 0.000990234375; }
+
+way[is_prop_set(rs, default)]::rs_const {
+    _image_url_base: "https://wiki.openstreetmap.org/w/index.php?title=Special:Redirect/file/";
+}
+
+way|z8-[is_prop_set(rs, default)]::* {
+    _dim_min: setting("rs_icon_size_min")/setting("rs_dpi_scale");
+    _dim_max: setting("rs_icon_size_max")/setting("rs_dpi_scale");
+    _dim: min(waylength()*prop("ppm")/6, prop("_dim_max"));
+    repeat-image-width: prop("_dim");
+    repeat-image-offset: -prop("_dim")/2;
+    repeat-image-spacing: waylength()*prop("ppm")*2;
+    repeat-image-opacity: mod(index() - 1, max(1, round(setting("rs_freq_way")))) == 0 && prop("_dim") >= prop("_dim_min") ? 1 : 0;
+}
+
+/* TODO: Wait until JOSM devs add for loops FFS */
+relation[route=road][network] >[role*=""] way::rs_badge0 {
+    _last: concat(parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge0), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge1 {
+    _last: concat(prop(_last, rs_badge0), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+    repeat-image-phase: -prop("_dim");
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge1), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge2 {
+    _last: concat(prop(_last, rs_badge1), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+    repeat-image-phase: -prop("_dim")*2;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge2), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge3 {
+    _last: concat(prop(_last, rs_badge2), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+    repeat-image-phase: -prop("_dim")*3;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge3), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge4 {
+    _last: concat(prop(_last, rs_badge3), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+    repeat-image-phase: -prop("_dim")*4;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge4), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge5 {
+    _last: concat(prop(_last, rs_badge4), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag(symbol), concat(prop(_image_url_base, rs_const), "MUTCD_W18-1.svg"));
+    repeat-image-phase: -prop("_dim")*5;
+}
+relation[route=road][network] >[role*=""] way::rs_badge0_mod {
+    _last: concat(parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge0), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge1_mod {
+    _last: concat(prop(_last, rs_badge0), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+    repeat-image-phase: -prop("_dim");
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge1), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge2_mod {
+    _last: concat(prop(_last, rs_badge1), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+    repeat-image-phase: -prop("_dim")*2;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge2), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge3_mod {
+    _last: concat(prop(_last, rs_badge2), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+    repeat-image-phase: -prop("_dim")*3;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge3), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge4_mod {
+    _last: concat(prop(_last, rs_badge3), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+    repeat-image-phase: -prop("_dim")*4;
+}
+relation[route=road][network] >[!regexp_test(prop(_last, rs_badge4), concat(parent_tag(network), parent_tag(ref)))][role*=""] way::rs_badge5_mod {
+    _last: concat(prop(_last, rs_badge4), "|", parent_tag(network), parent_tag(ref));
+    repeat-image: any(parent_tag("symbol:modifier"), "data:image/svg+xml,<svg width='1' height='1'></svg>");
+    repeat-image-offset: -prop("_dim")/4;
+    repeat-image-phase: -prop("_dim")*5;
+}
