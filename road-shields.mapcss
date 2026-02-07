@@ -4,7 +4,7 @@ meta {
     version: "0.1";
     description: "Render road shields adjacent their respective ways.";
     author: "mayhaps-perchance";
-    link: "";
+    link: "https://github.com/mayhaps-perchance/josm-road-shields";
     min-josm-version: "17759"; /* tentative */
 }
 
